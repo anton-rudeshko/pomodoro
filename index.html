@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pomodoro tracker</title>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <div class="main">
+
+      <form id="task-form" class="head-task">
+        <input autofocus="autofocus"
+               autocomplete="false"
+               tabindex="0"
+               id="task-name"
+               class="head-task__name"
+               type="text"
+               maxlength="25"
+               placeholder="What are you doing?" />
+      </form>
+
+      <div class="timer">
+        <div id="timer" class="timer__time">25:00</div>
+      </div>
+
+      <div class="buttons">
+        <button id="start-pomodoro" tabindex="1" class="button button_color_orange">Start!</button>
+        <button id="short-break" tabindex="1" class="button">Break</button>
+        <button id="long-break" tabindex="1" class="button">Long break</button>
+        <button id="notify-me" class="button">Notify me</button>
+      </div>
+
+      <div id="pomodoros-today" class="pomodoros-today"></div>
+
+      <footer class="footer">
+        Made by <a class="link" target="_blank" href="http://www.rudeshko.com">Anton Rudeshko</a> with love in late 2013.
+      </footer>
+
+    </div>
+
+    <a href="https://github.com/anton-rudeshko/pomodoro" target="_blank">
+      <img style="position: absolute; top: 0; right: 0; border: 0;"
+           src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"
+           alt="Fork me on GitHub">
+    </a>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-30845013-3', 'github.com');
+      ga('send', 'pageview');
+    </script>
+    <script src="main.js"></script>
+  </body>
+</html>

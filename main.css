@@ -1,0 +1,100 @@
+body, html {
+  height: 100%;
+  font-family: Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 100px;
+}
+
+.main {
+  text-align: center;
+  margin-top: 100px;
+}
+
+.head-task {
+  text-align: center;
+}
+
+.head-task__name {
+  padding: 10px;
+  width: 100%;
+  border: 1px solid transparent;
+  background-color: transparent;
+  text-align: center;
+  font-size: 36px;
+  outline: none;
+}
+
+.head-task__name:hover,
+.head-task__name:focus,
+.head-task__name:active {
+  border-color: #d9d9d9;
+}
+
+.timer {
+  border-top: 3px solid;
+  border-bottom: 3px solid;
+  border-color: #ffbd78;
+  background-color: #ffefe4;
+  text-align: center;
+}
+
+.timer__time {
+  text-align: center;
+  font-size: 150px;
+  color: #d27106;
+  font-weight: bold;
+}
+
+.pomodoros-today {
+  margin: 20px 0;
+}
+
+.footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #b4b4b4;
+}
+
+.footer .link {
+  color: inherit;
+}
+
+.buttons {
+  margin: 20px 0;
+}
+
+.button {
+  position: relative;
+  margin: 5px;
+  padding: 15px;
+  border: 0;
+  border-radius: 4px;
+  background-color: #af2f24;
+  box-shadow: 0 3px 0 0 #8d2721;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+
+.button:hover,
+.button:focus {
+  bottom: 1px;
+  outline: none;
+}
+
+.button_color_orange {
+  background-color: #ff9706;
+  box-shadow: 0 3px 0 0 #d27106;
+  color: #fff;
+}
+
+.buttons {
+  text-align: center;
+}
