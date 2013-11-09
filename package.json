@@ -1,0 +1,24 @@
+{
+  "name": "pomodoro",
+  "version": "0.0.1",
+  "description": "Simple pomodoro time tracker.",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/anton-rudeshko/pomodoro.git"
+  },
+  "keywords": [
+    "pomodoro",
+    "timer",
+    "tracker"
+  ],
+  "author": "Anton Rudeshko <anton@rudeshko.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anton-rudeshko/pomodoro/issues"
+  },
+  "homepage": "https://github.com/anton-rudeshko/pomodoro",
+  "devDependencies": {
+    "grunt": "~0.4.1"
+  }
+}
