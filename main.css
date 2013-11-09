@@ -91,17 +91,22 @@ body, html {
 .button_color_orange {
   background-color: #ff9706;
   box-shadow: 0 3px 0 0 #d27106;
-  color: #fff;
+}
+
+
+.button_color_green {
+  background-color: #00c30a;
+  box-shadow: 0 3px 0 0 #008c0a;
 }
 
 .buttons {
   text-align: center;
 }
 
-#notify-me {
+.notify {
   display: none;
 }
 
-#notify-me.visible {
+.notify__visible {
   display: inline-block;
 }

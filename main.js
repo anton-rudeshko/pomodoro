@@ -19,6 +19,7 @@
     },
 
     countdownEl = byId('countdown'),
+    alertSoundEl = byId('alert-sound'),
     pomodorosTodayEl = byId('pomodoros-today'),
 
     pomodoroButton = byId('start-pomodoro'),
@@ -35,7 +36,7 @@
     pomodorosToday = 0;
 
   if (showNotifyButton) {
-    notifyMeButton.classList.add('visible')
+    notifyMeButton.classList.add('notify__visible')
   }
 
   function pad(num) {
@@ -118,6 +119,7 @@
       // Count pomodoros
       countdownType == COUNTDOWN_TYPE.POMODORO && countPomodoros();
 
+      alertSoundEl.play();
       document.title = 'Time is up! - Pomodoro tracker';
       new Notification('Pomodoro tracker', {
         tag: 'pomodoro-tracker',
@@ -147,7 +149,7 @@
 
   notifyMeButton.addEventListener('click', function() {
     notifications.requestPermission();
-    notifyMeButton.classList.remove('visible');
+    notifyMeButton.classList.remove('notify__visible');
   })
 
 })(window, document);
