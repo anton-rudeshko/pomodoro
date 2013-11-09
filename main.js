@@ -1,14 +1,22 @@
-(function(document) {
+(function(window, document) {
   'use strict';
 
-  var byId = document.getElementById.bind(document),
+  var
+    localStorage = window.localStorage || {},
+    byId = document.getElementById.bind(document),
 
     SECOND = 1000,
     MINUTE = 60 * SECOND,
 
-    POMODORO_DURATION = 25 * MINUTE,
+    POMODORO_DURATION = (localStorage['isDev'] ? .25 : 25) * MINUTE,
     SHORT_BREAK_DURATION = 5 * MINUTE,
     LONG_BREAK_DURATION = 15 * MINUTE,
+
+    COUNTDOWN_TYPE = {
+      POMODORO: 1,
+      SHORT_BREAK: 2,
+      LONG_BREAK: 3
+    },
 
     countdownEl = byId('countdown'),
     pomodorosTodayEl = byId('pomodoros-today'),
@@ -21,7 +29,14 @@
     taskNameInput = byId('task-name'),
     taskNameForm = byId('task-form'),
 
+    notifications = window.webkitNotifications,
+    showNotifyButton = notifications && notifications.checkPermission() == 1,
+
     pomodorosToday = 0;
+
+  if (showNotifyButton) {
+    notifyMeButton.classList.add('visible')
+  }
 
   function pad(num) {
     return num < 10 ? '0' + num : num;
@@ -44,10 +59,11 @@
   }
 
   Countdown.prototype = {
-    startCountdown: function(countdownTime) {
+    startCountdown: function(countdownTime, _countdownType) {
       if (this._countdownInterval) return;
 
-      this._countdownTime = countdownTime;
+      this._countdownType = _countdownType;
+      this._countdownTime = countdownTime || null;
       this._startMillis = new Date();
 
       var _this = this;
@@ -63,9 +79,9 @@
       this._countdownInterval = null;
     },
 
-    restartCountdown: function(countdownTime) {
+    restartCountdown: function(countdownTime, countdownName) {
       this.stopCountdown();
-      this.startCountdown(countdownTime);
+      this.startCountdown(countdownTime, countdownName);
     },
 
     _updateCountdown: function() {
@@ -82,10 +98,14 @@
 
     _reportEnd: function() {
       this.stopCountdown();
-      typeof this.onEnd === 'function' && this.onEnd();
+      typeof this.onEnd === 'function' && this.onEnd(this._countdownType);
     }
 
   };
+
+  function countPomodoros() {
+    pomodorosTodayEl.innerText = 'Pomodoros today: ' + ++pomodorosToday;
+  }
 
   var countdown = new Countdown({
     tick: SECOND,
@@ -94,8 +114,9 @@
       document.title = formattedTime + ' - Pomodoro tracker';
       countdownEl.innerText = formattedTime;
     },
-    onEnd: function() {
-      pomodorosTodayEl.innerText = 'Pomodoros today: ' + ++pomodorosToday;
+    onEnd: function(countdownType) {
+      // Count pomodoros
+      countdownType == COUNTDOWN_TYPE.POMODORO && countPomodoros();
 
       document.title = 'Time is up! - Pomodoro tracker';
       new Notification('Pomodoro tracker', {
@@ -108,25 +129,25 @@
   taskNameForm.addEventListener('submit', function(e) {
     e.preventDefault();
 
-    countdown.startCountdown(POMODORO_DURATION);
+    countdown.startCountdown(POMODORO_DURATION, COUNTDOWN_TYPE.POMODORO);
     taskNameInput.blur();
   });
 
   pomodoroButton.addEventListener('click', function() {
-    countdown.restartCountdown(POMODORO_DURATION);
+    countdown.restartCountdown(POMODORO_DURATION, COUNTDOWN_TYPE.POMODORO);
   });
 
   shortBreakButton.addEventListener('click', function() {
-    countdown.restartCountdown(SHORT_BREAK_DURATION);
+    countdown.restartCountdown(SHORT_BREAK_DURATION, COUNTDOWN_TYPE.SHORT_BREAK);
   });
 
   longBreakButton.addEventListener('click', function() {
-    countdown.restartCountdown(LONG_BREAK_DURATION);
+    countdown.restartCountdown(LONG_BREAK_DURATION, COUNTDOWN_TYPE.LONG_BREAK);
   });
 
-  notifyMeButton.addEventListener('click', function(e) {
-    Notification.requestPermission(function(permission) {
-    })
+  notifyMeButton.addEventListener('click', function() {
+    notifications.requestPermission();
+    notifyMeButton.classList.remove('visible');
   })
 
-})(document);
+})(window, document);

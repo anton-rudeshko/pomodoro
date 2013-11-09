@@ -97,3 +97,11 @@ body, html {
 .buttons {
   text-align: center;
 }
+
+#notify-me {
+  display: none;
+}
+
+#notify-me.visible {
+  display: inline-block;
+}
