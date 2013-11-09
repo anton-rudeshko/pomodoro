@@ -6,7 +6,7 @@
     SECOND = 1000,
     MINUTE = 60 * SECOND,
 
-    POMODORO_DURATION = .25 * MINUTE,
+    POMODORO_DURATION = 25 * MINUTE,
     SHORT_BREAK_DURATION = 5 * MINUTE,
     LONG_BREAK_DURATION = 15 * MINUTE,
 
@@ -112,15 +112,15 @@
     taskNameInput.blur();
   });
 
-  pomodoroButton.addEventListener('click', function(e) {
+  pomodoroButton.addEventListener('click', function() {
     countdown.restartCountdown(POMODORO_DURATION);
   });
 
-  shortBreakButton.addEventListener('click', function(e) {
+  shortBreakButton.addEventListener('click', function() {
     countdown.restartCountdown(SHORT_BREAK_DURATION);
   });
 
-  longBreakButton.addEventListener('click', function(e) {
+  longBreakButton.addEventListener('click', function() {
     countdown.restartCountdown(LONG_BREAK_DURATION);
   });
 
