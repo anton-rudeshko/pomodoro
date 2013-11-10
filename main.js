@@ -5,12 +5,22 @@
     localStorage = window.localStorage || {},
     byId = document.getElementById.bind(document),
 
+    /**
+     *
+     * @param {EventTarget} el
+     * @param {String} event
+     * @param {Function} callback
+     */
+    on = function(el, event, callback) {
+      el.addEventListener(event, callback);
+    },
+
     SECOND = 1000,
     MINUTE = 60 * SECOND,
 
     POMODORO_DURATION = (localStorage['isDev'] ? .25 : 25) * MINUTE,
-    SHORT_BREAK_DURATION = 5 * MINUTE,
-    LONG_BREAK_DURATION = 15 * MINUTE,
+    SHORT_BREAK_DURATION = (localStorage['isDev'] ? .05 : 5) * MINUTE,
+    LONG_BREAK_DURATION = (localStorage['isDev'] ? .15 : 15) * MINUTE,
 
     COUNTDOWN_TYPE = {
       POMODORO: 1,
@@ -33,11 +43,14 @@
     notifications = window.webkitNotifications,
     showNotifyButton = notifications && notifications.checkPermission() == 1,
 
-    pomodorosToday = 0;
+    currentTask = null,
+    tasks = JSON.parse(localStorage['tasks'] || '[]');
 
   if (showNotifyButton) {
     notifyMeButton.classList.add('notify__visible')
   }
+
+  pomodorosTodayEl.innerHTML = renderTaskList(tasks);
 
   function pad(num) {
     return num < 10 ? '0' + num : num;
@@ -47,6 +60,18 @@
     var mins = Math.floor(time / MINUTE),
       secs = Math.round(time % MINUTE / SECOND);
     return pad(mins) + ':' + pad(secs);
+  }
+
+  /**
+   * @param {String} name
+   * @constructor
+   */
+  function Task(name) {
+    this.name = name;
+
+    this.pomodoros = 0;
+    this.shortBreaks = 0;
+    this.longBreaks = 0;
   }
 
   function Countdown(options) {
@@ -70,9 +95,13 @@
       var _this = this;
 
       this._updateCountdown();
-      this._countdownInterval = setInterval(function() {
+      this._countdownInterval = setInterval(function updateCountdown() {
         _this._updateCountdown();
       }, this.tick);
+    },
+
+    isTicking: function() {
+      return !!this._countdownInterval;
     },
 
     stopCountdown: function() {
@@ -104,8 +133,10 @@
 
   };
 
-  function countPomodoros() {
-    pomodorosTodayEl.innerText = 'Pomodoros today: ' + ++pomodorosToday;
+  function soundAlert() {
+    // http://stackoverflow.com/questions/8733330/why-cant-i-play-sounds-more-than-once-using-html5-audio-tag
+    window.chrome && alertSoundEl.load();
+    alertSoundEl.play();
   }
 
   var countdown = new Countdown({
@@ -116,40 +147,74 @@
       countdownEl.innerText = formattedTime;
     },
     onEnd: function(countdownType) {
-      // Count pomodoros
-      countdownType == COUNTDOWN_TYPE.POMODORO && countPomodoros();
+      countdownType === COUNTDOWN_TYPE.POMODORO && currentTask.pomodoros++;
+      countdownType === COUNTDOWN_TYPE.SHORT_BREAK && currentTask.shortBreaks++;
+      countdownType === COUNTDOWN_TYPE.LONG_BREAK && currentTask.longBreaks++;
 
-      alertSoundEl.play();
+      soundAlert();
+
       document.title = 'Time is up! - Pomodoro tracker';
       new Notification('Pomodoro tracker', {
         tag: 'pomodoro-tracker',
         body: 'Time is up!'
       });
+
+      saveTasks(tasks);
+      pomodorosTodayEl.innerHTML = renderTaskList(tasks);
     }
   });
 
-  taskNameForm.addEventListener('submit', function(e) {
-    e.preventDefault();
+  function saveTasks(tasks) {
+    localStorage['tasks'] = JSON.stringify(tasks);
+  }
 
-    countdown.startCountdown(POMODORO_DURATION, COUNTDOWN_TYPE.POMODORO);
+  function updateTask(newTaskName) {
+    if (!currentTask || (!countdown.isTicking() && currentTask.name !== newTaskName))
+      tasks.unshift(currentTask = new Task(newTaskName));
+    currentTask.name = newTaskName;
+
+    saveTasks(tasks);
+
+    pomodorosTodayEl.innerHTML = renderTaskList(tasks);
+  }
+
+  on(taskNameForm, 'submit', function(e) {
+    e.preventDefault();
     taskNameInput.blur();
+
+    updateTask(taskNameInput.value);
+    countdown.startCountdown(POMODORO_DURATION, COUNTDOWN_TYPE.POMODORO);
   });
 
-  pomodoroButton.addEventListener('click', function() {
+  on(pomodoroButton, 'click', function() {
+    updateTask(taskNameInput.value);
     countdown.restartCountdown(POMODORO_DURATION, COUNTDOWN_TYPE.POMODORO);
   });
 
-  shortBreakButton.addEventListener('click', function() {
+  on(shortBreakButton, 'click', function() {
+    updateTask(taskNameInput.value);
     countdown.restartCountdown(SHORT_BREAK_DURATION, COUNTDOWN_TYPE.SHORT_BREAK);
   });
 
-  longBreakButton.addEventListener('click', function() {
+  on(longBreakButton, 'click', function() {
+    updateTask(taskNameInput.value);
     countdown.restartCountdown(LONG_BREAK_DURATION, COUNTDOWN_TYPE.LONG_BREAK);
   });
 
-  notifyMeButton.addEventListener('click', function() {
+  on(notifyMeButton, 'click', function() {
     notifications.requestPermission();
     notifyMeButton.classList.remove('notify__visible');
-  })
+  });
+
+  function renderTaskList(tasks) {
+    return '<ul class="task-list">' + tasks.map(renderTask).join('') + '</ul>'
+  }
+
+  function renderTask(task) {
+    return '<li class="task-list__task">' +
+           (task.name ? task.name + ': ' : '') +
+           [task.pomodoros, task.shortBreaks, task.longBreaks].join('/') +
+           '</li>';
+  }
 
 })(window, document);

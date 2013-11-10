@@ -110,3 +110,7 @@ body, html {
 .notify__visible {
   display: inline-block;
 }
+
+.task-list {
+  list-style: none;
+}
