@@ -10,8 +10,7 @@ body, html {
 }
 
 .main {
-  text-align: center;
-  margin-top: 100px;
+  margin-top: 50px;
 }
 
 .head-task {
@@ -20,12 +19,11 @@ body, html {
 
 .head-task__name {
   padding: 10px;
-  width: 100%;
+  width: 600px;
   border: 1px solid transparent;
   background-color: transparent;
   text-align: center;
   font-size: 36px;
-  outline: none;
 }
 
 .head-task__name:hover,
@@ -35,22 +33,26 @@ body, html {
 }
 
 .countdown {
-  border-top: 3px solid;
-  border-bottom: 3px solid;
-  border-color: #ffbd78;
-  background-color: #ffefe4;
   text-align: center;
+  cursor: default;
 }
 
 .countdown__time {
   text-align: center;
   font-size: 150px;
-  color: #d27106;
   font-weight: bold;
 }
 
-.pomodoros-today {
-  margin: 20px 0;
+.countdown__timer_pomodoro .countdown__time {
+  color: #f10f0f;
+}
+
+.countdown__timer_shortBreak .countdown__time {
+  color: #ffb20f;
+}
+
+.countdown__timer_longBreak .countdown__time {
+  color: #27c411;
 }
 
 .footer {
@@ -71,7 +73,7 @@ body, html {
 .button {
   position: relative;
   margin: 5px;
-  padding: 15px;
+  padding: 15px 20px;
   border: 0;
   border-radius: 4px;
   background-color: #af2f24;
@@ -82,21 +84,23 @@ body, html {
   letter-spacing: 1px;
 }
 
-.button:hover,
-.button:focus {
+.button:hover {
   bottom: 1px;
-  outline: none;
+}
+
+.button_color_red {
+  background-color: #f10f0f;
+  box-shadow: 0 3px 0 0 #941515;
 }
 
 .button_color_orange {
-  background-color: #ff9706;
-  box-shadow: 0 3px 0 0 #d27106;
+  background-color: #ffb20f;
+  box-shadow: 0 3px 0 0 #9e6f0b;
 }
 
-
 .button_color_green {
-  background-color: #00c30a;
-  box-shadow: 0 3px 0 0 #008c0a;
+  background-color: #27c411;
+  box-shadow: 0 3px 0 0 #167209;
 }
 
 .buttons {
@@ -112,5 +116,80 @@ body, html {
 }
 
 .task-list {
-  list-style: none;
+  margin: 0 auto;
+  width: 600px;
+}
+
+.task-list__head {
+  margin: 5px 0;
+}
+
+.task-list__list {
+  margin: 10px 0 10px -38px;
+  padding: 0;
+  border-collapse: collapse;
+}
+
+.task-list__cell {
+  position: relative;
+  line-height: 28px;
+  padding: 0;
+}
+
+.task-list__cell_type_name {
+  padding-right: 20px;
+}
+
+.task-list__cell_type_periods {
+  width: 40%;
+}
+
+.task-list__cell_type_remove {
+  width: 28px;
+}
+
+.task-list__remove {
+  display: inline-block;
+  visibility: hidden;
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  color: #000;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.task-list__task:hover .task-list__remove {
+  visibility: visible;
+}
+
+.task-list__remove:hover {
+  background-color: #ff9706;
+  color: #fff;
+}
+
+.task-list__period {
+  display: inline-block;
+  width: 9px;
+  height: 18px;
+  margin-right: 5px;
+  float: left;
+}
+
+.task-list__name:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.task-list__period_type_pomodoro {
+  background-color: #f10f0f;
+}
+
+.task-list__period_type_shortBreak {
+  background-color: #ffb20f;
+}
+
+.task-list__period_type_longBreak {
+  background-color: #27c411;
 }
