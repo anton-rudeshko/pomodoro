@@ -39,8 +39,11 @@ body, html {
 
 .countdown__time {
   text-align: center;
-  font-size: 150px;
   font-weight: bold;
+  font-size: 150px;
+
+  -webkit-transition: color .5s;
+          transition: color .5s;
 }
 
 .countdown__timer_pomodoro .countdown__time {
@@ -85,7 +88,7 @@ body, html {
 }
 
 .button:hover {
-  bottom: 1px;
+  opacity: .8;
 }
 
 .button_color_red {
