@@ -1,8 +1,8 @@
 (function(window, document) {
   var angular = window.angular,
+    localStorage = window.localStorage || {},
 
     app = angular.module('pomodoro', []),
-    localStorage = window.localStorage || {},
     isDev = localStorage['isDev'],
 
     SECOND = 1000,
@@ -15,12 +15,15 @@
       longBreak: 15 * SCALE
     },
 
+    DATE_FORMAT = 'mm:ss',
     DEFAULT_TASK_NAME = 'Some task',
 
     notifications = window.webkitNotifications;
 
   /**
    * @param {String} [name]
+   * @property {String} name
+   * @property {Object[]} periods
    * @constructor
    */
   function Task(name) {
@@ -58,38 +61,47 @@
     soundAlert();
   }
 
-  app.controller('MainCtrl', function($scope, $interval, dateFilter) {
+  app.controller('MainCtrl', function MainCtrl($scope, $interval, dateFilter) {
     var _this = this,
-
       tasks = $scope.tasks = loadTasks();
 
     $scope.timerType = 'pomodoro';
-    $scope.formattedTime = '25:00';
+    $scope.formattedTime = dateFilter(DURATIONS.pomodoro, DATE_FORMAT);
     $scope.currentTask = new Task();
 
+    /**
+     * @param {Task} task
+     */
     $scope.removeTask = function(task) {
       tasks.splice(tasks.indexOf(task), 1);
       saveTasks(tasks);
     };
 
     _this.updateTimeDisplay = function(timeLeft) {
-      $scope.formattedTime = dateFilter(timeLeft, 'mm:ss');
+      $scope.formattedTime = dateFilter(timeLeft, DATE_FORMAT);
       document.title = $scope.formattedTime + ' - Pomodoro tracker';
+    };
+
+    /**
+     * @return {Boolean}
+     */
+    _this.isTicking = function() {
+      return !!_this.countdownInterval;
     };
 
     /**
      * @param {Number} duration
      * @param {String} durationType
      */
-    _this.countdown = function(duration, durationType) {
-      if (_this.countdownInterval) return;
+    _this.startCountdown = function(duration, durationType) {
+      if (!duration || !durationType || _this.isTicking()) return;
 
       var timeLeft = duration,
         currentTask = $scope.currentTask;
 
       // Looking for task with same name
       tasks.some(function(task) {
-        if (!task.name.match(new RegExp(currentTask.name.trim(), 'gi'))) return false;
+        if (!currentTask.name.match(new RegExp(task.name.trim(), 'gi'))) return false;
 
         $scope.currentTask = currentTask = task;
         return true;
@@ -98,33 +110,62 @@
       $scope.timerType = durationType;
 
       _this.updateTimeDisplay(timeLeft);
-      _this.countdownInterval = $interval(function() { timeLeft -= SECOND; }, SECOND, timeLeft / SECOND)
-        .then(function timeIsOut() {
-          _this.countdownInterval = null;
+      _this.countdownInterval = $interval(function() {
+        timeLeft -= SECOND;
+        _this.updateTimeDisplay(timeLeft);
+      }, SECOND, timeLeft / SECOND);
 
-          if (!currentTask.name) currentTask.name = DEFAULT_TASK_NAME;
+      _this.countdownInterval.then(function timeIsOut() {
+        _this.countdownInterval = null;
 
-          if (!~tasks.indexOf(currentTask)) tasks.unshift(currentTask);
+        if (!currentTask.name) currentTask.name = DEFAULT_TASK_NAME;
 
-          currentTask.periods.push({ type: durationType });
+        if (!~tasks.indexOf(currentTask)) tasks.unshift(currentTask);
 
-          notifyAll();
+        currentTask.periods.push({ type: durationType });
+        $scope.currentTask = new Task(currentTask.name);
 
-          saveTasks(tasks);
-        }, function canceled() {
+        notifyAll();
 
-        }, function progress() {
-          _this.updateTimeDisplay(timeLeft);
-        });
+        saveTasks(tasks);
+      });
     };
 
+    _this.cancelCountdown = function() {
+      $interval.cancel(_this.countdownInterval);
+      _this.countdownInterval = null;
+    };
+
+    _this.restartCountdown = function(duration, durationType) {
+      _this.cancelCountdown();
+      _this.startCountdown(duration, durationType);
+    };
+
+    /**
+     * Switch currently selected task.
+     * @param {Task} task
+     */
     $scope.select = function(task) {
       $scope.currentTask = task;
     };
 
+    /**
+     * @param {String} durationType
+     */
     $scope.start = function(durationType) {
+      document.activeElement.blur();
+
       var duration = DURATIONS[durationType];
-      if (duration) _this.countdown(duration, durationType);
+      if (!duration) return;
+
+      _this.restartCountdown(duration, durationType);
+    };
+
+    $scope.submit = function() {
+      document.activeElement.blur();
+
+      if (_this.isTicking()) return;
+      _this.restartCountdown(DURATIONS['pomodoro'], 'pomodoro');
     };
 
     $scope.showNotifyButton = notifications && notifications.checkPermission() === 1;
