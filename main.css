@@ -143,10 +143,6 @@ body, html {
   padding-right: 20px;
 }
 
-.task-list__cell_type_periods {
-  width: 40%;
-}
-
 .task-list__cell_type_remove {
   width: 28px;
 }
