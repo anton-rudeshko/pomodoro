@@ -50,12 +50,12 @@
     audio.play();
   }
 
-  function notifyAll() {
-    document.title = 'Time is up! - Pomodoro tracker';
+  function notifyAll(taskName) {
+    document.title = 'Time is up!' + (taskName ? ' - ' + taskName : '') + ' - Pomodoro tracker';
 
     new Notification('Pomodoro tracker', {
       tag: 'pomodoro-tracker',
-      body: 'Time is up!'
+      body: (taskName ? taskName + ' - ' : '') + 'Time is up!'
     });
 
     soundAlert();
@@ -77,9 +77,9 @@
       saveTasks(tasks);
     };
 
-    _this.updateTimeDisplay = function(timeLeft) {
+    _this.updateTimeDisplay = function(timeLeft, taskName) {
       $scope.formattedTime = dateFilter(timeLeft, DATE_FORMAT);
-      document.title = $scope.formattedTime + ' - Pomodoro tracker';
+      document.title = $scope.formattedTime + (taskName ? ' - ' + taskName : '') + ' - Pomodoro tracker';
     };
 
     /**
@@ -109,10 +109,10 @@
 
       $scope.timerType = durationType;
 
-      _this.updateTimeDisplay(timeLeft);
+      _this.updateTimeDisplay(timeLeft, currentTask.name);
       _this.countdownInterval = $interval(function() {
         timeLeft -= SECOND;
-        _this.updateTimeDisplay(timeLeft);
+        _this.updateTimeDisplay(timeLeft, currentTask.name);
       }, SECOND, timeLeft / SECOND);
 
       _this.countdownInterval.then(function timeIsOut() {
@@ -125,7 +125,7 @@
         currentTask.periods.push({ type: durationType });
         $scope.currentTask = new Task(currentTask.name);
 
-        notifyAll();
+        notifyAll(currentTask.name);
 
         saveTasks(tasks);
       });
