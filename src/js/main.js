@@ -61,7 +61,7 @@
     soundAlert();
   }
 
-  app.controller('MainCtrl', function MainCtrl($scope, $interval, dateFilter) {
+  app.controller('MainCtrl', ['$scope', '$interval', 'dateFilter', function($scope, $interval, dateFilter) {
     var _this = this,
       tasks = $scope.tasks = loadTasks();
 
@@ -173,5 +173,5 @@
       notifications.requestPermission();
       $scope.showNotifyButton = false;
     };
-  });
+  }]);
 })(window, document);
