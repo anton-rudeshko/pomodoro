@@ -45,7 +45,7 @@
   function soundAlert() {
     // http://stackoverflow.com/questions/8733330/why-cant-i-play-sounds-more-than-once-using-html5-audio-tag
     var audio = document.createElement('audio');
-    audio.src = 'alert.mp3';
+    audio.src = 'assets/alert.mp3';
     audio.load();
     audio.play();
   }
