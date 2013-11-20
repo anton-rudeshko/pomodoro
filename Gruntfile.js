@@ -8,7 +8,6 @@ module.exports = function(grunt) {
       main: {
         files: [
           { expand: true, src: 'src/assets/*', dest: 'out/assets/', flatten: true },
-          { expand: true, src: 'src/index.html', dest: 'out/', flatten: true },
           { expand: true, src: 'src/CNAME', dest: 'out/', flatten: true }
         ]
       }
@@ -44,6 +43,19 @@ module.exports = function(grunt) {
       }
     },
 
+    htmlmin: {
+      options: {
+        removeRedundantAttributes: true,
+        removeAttributeQuotes: true,
+        collapseWhitespace: true
+      },
+      main: {
+        files: {
+          'out/index.html': 'src/index.html'
+        }
+      }
+    },
+
     'gh-pages': {
       options: {
         base: 'out'
@@ -63,8 +75,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-gh-pages');
+  grunt.loadNpmTasks('grunt-contrib-htmlmin');
 
-  grunt.registerTask('build', ['clean', 'copy', 'csso', 'uglify']);
+  grunt.registerTask('build', ['clean', 'copy', 'csso', 'uglify', 'htmlmin']);
   grunt.registerTask('deploy', ['build', 'gh-pages']);
   grunt.registerTask('default', ['build']);
 };
