@@ -8,7 +8,8 @@ module.exports = function(grunt) {
       main: {
         files: [
           { expand: true, src: 'src/assets/*', dest: 'out/assets/', flatten: true },
-          { expand: true, src: 'src/index.html', dest: 'out/', flatten: true }
+          { expand: true, src: 'src/index.html', dest: 'out/', flatten: true },
+          { expand: true, src: 'src/CNAME', dest: 'out/', flatten: true }
         ]
       }
     },
