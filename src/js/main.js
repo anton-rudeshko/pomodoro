@@ -31,12 +31,15 @@
     this.periods = [];
   }
 
+  /**
+   * @return {Task[]}
+   */
   function loadTasks() {
-    return JSON.parse(localStorage['tasks'] || '[]');
+    return angular.fromJson(localStorage['tasks'] || '[]');
   }
 
   /**
-   * @param {Object[]} tasks
+   * @param {Task[]} tasks
    */
   function saveTasks(tasks) {
     localStorage['tasks'] = angular.toJson(tasks);
