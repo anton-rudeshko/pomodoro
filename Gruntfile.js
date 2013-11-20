@@ -43,6 +43,13 @@ module.exports = function(grunt) {
       }
     },
 
+    'gh-pages': {
+      options: {
+        base: 'out'
+      },
+      src: '**/*'
+    },
+
     watch: {
 
     }
@@ -54,7 +61,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-csso');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-gh-pages');
 
   grunt.registerTask('build', ['clean', 'copy', 'csso', 'uglify']);
+  grunt.registerTask('deploy', ['build', 'gh-pages']);
   grunt.registerTask('default', ['build']);
 };
