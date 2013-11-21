@@ -1,0 +1,9 @@
+CACHE MANIFEST
+# 21/11/2013
+
+CACHE:
+index.html
+//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js
+
+NETWORK:
+*
