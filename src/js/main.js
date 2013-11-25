@@ -22,13 +22,20 @@
 
   /**
    * @param {String} [name]
-   * @property {String} name
-   * @property {Object[]} periods
    * @constructor
    */
   function Task(name) {
     this.name = name || '';
     this.periods = [];
+  }
+
+  /**
+   * @param {String} type
+   * @constructor
+   */
+  function Period(type) {
+    this.type = type;
+    this.time = new Date().getTime();
   }
 
   /**
@@ -63,6 +70,34 @@
 
     soundAlert();
   }
+
+  /**
+   * @param {Number|Date} date
+   * @return {Number}
+   */
+  function dropTime(date) {
+    date = new Date(date);
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+  }
+
+  /**
+   * @return {Number}
+   */
+  function todayDate() {
+    return dropTime(new Date());
+  }
+
+  app.filter('todayPeriods', function() {
+    return function(tasks) {
+      var today = todayDate();
+
+      return tasks.reduce(function(result, task) {
+        return result.concat(task.periods || []);
+      }, []).filter(function(period) {
+          return today === dropTime(period.time);
+        });
+    };
+  });
 
   app.controller('MainCtrl', ['$scope', '$interval', 'dateFilter', function($scope, $interval, dateFilter) {
     var _this = this,
@@ -125,7 +160,7 @@
 
         if (!~tasks.indexOf(currentTask)) tasks.unshift(currentTask);
 
-        currentTask.periods.push({ type: durationType });
+        currentTask.periods.push(new Period(durationType));
         $scope.currentTask = new Task(currentTask.name);
 
         notifyAll(currentTask.name);

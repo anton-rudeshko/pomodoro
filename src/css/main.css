@@ -149,6 +149,10 @@ body, html {
   width: 28px;
 }
 
+.task-list__today .task-list__cell {
+  padding-bottom: 10px;
+}
+
 .task-list__remove {
   display: inline-block;
   visibility: hidden;
@@ -170,28 +174,31 @@ body, html {
   color: #fff;
 }
 
-.task-list__period {
-  display: inline-block;
-  width: 9px;
-  height: 18px;
-  margin-right: 5px;
-  float: left;
-}
-
 .task-list__name:hover {
   color: #666;
   text-decoration: underline;
   cursor: pointer;
 }
 
-.task-list__period_type_pomodoro {
+.period {
+  display: inline-block;
+  width: 9px;
+  height: 18px;
+  margin-right: 5px;
+}
+
+.period_selected {
+  outline: 1px solid #333;
+}
+
+.period_type_pomodoro {
   background-color: #f10f0f;
 }
 
-.task-list__period_type_shortBreak {
+.period_type_shortBreak {
   background-color: #ffb20f;
 }
 
-.task-list__period_type_longBreak {
+.period_type_longBreak {
   background-color: #27c411;
 }

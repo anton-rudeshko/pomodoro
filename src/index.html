@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="pomodoro" manifest="cache.manifest">
+<html ng-app="pomodoro">
   <head>
     <title>Pomodoro tracker</title>
     <link rel="stylesheet" href="css/main.css" />
@@ -36,6 +36,18 @@
         <h2 class="task-list__head">My tasks</h2>
 
         <table class="task-list__list">
+          <tr class="task-list__today">
+            <td class="task-list__cell"></td>
+            <td class="task-list__cell">Today:</td>
+            <td class="task-list__cell task-list__cell_type_periods">
+              <span ng-repeat="p in tasks | todayPeriods | orderBy:'time'"
+                    ng-mouseenter="p.$s = true"
+                    ng-mouseleave="p.$s = false"
+                    ng-class="{ period_selected: p.$s }"
+                    class="period period_type_{{ p.type }}">
+              </span>
+            </td>
+          </tr>
           <tr ng-repeat="task in tasks" class="task-list__task">
             <td class="task-list__cell task-list__cell_type_remove">
               <span class="task-list__remove" ng-click="removeTask(task)">&times;</span>
@@ -46,8 +58,11 @@
             </td>
 
             <td class="task-list__cell task-list__cell_type_periods">
-              <span ng-repeat="period in task.periods track by $index"
-                    class="task-list__period task-list__period_type_{{ period.type }}">
+              <span ng-repeat="p in task.periods"
+                    ng-mouseenter="p.$s = true"
+                    ng-mouseleave="p.$s = false"
+                    ng-class="{ period_selected: p.$s }"
+                    class="period period_type_{{ p.type }}">
               </span>
             </td>
           </tr>
