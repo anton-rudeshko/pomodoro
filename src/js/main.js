@@ -18,7 +18,7 @@
     DATE_FORMAT = 'mm:ss',
     DEFAULT_TASK_NAME = 'Some task',
 
-    notifications = window.webkitNotifications;
+    notifications = window.Notification;
 
   /**
    * @param {String} [name]
@@ -63,12 +63,17 @@
   function notifyAll(taskName) {
     document.title = 'Time is up!' + (taskName ? ' - ' + taskName : '') + ' - Pomodoro tracker';
 
-    new Notification('Pomodoro tracker', {
+    soundAlert();
+
+    var notification = new Notification('Pomodoro tracker', {
       tag: 'pomodoro-tracker',
       body: (taskName ? taskName + ' - ' : '') + 'Time is up!'
     });
 
-    soundAlert();
+    // Automatically close notification after 5 seconds
+    notification.onshow = function() {
+      setTimeout(function() { notification.close(); }, 5 * SECOND);
+    };
   }
 
   /**
@@ -206,7 +211,7 @@
       _this.restartCountdown(DURATIONS['pomodoro'], 'pomodoro');
     };
 
-    $scope.showNotifyButton = notifications && notifications.checkPermission() === 1;
+    $scope.showNotifyButton = notifications && notifications.permission === 'default';
     $scope.turnNotifications = function() {
       notifications.requestPermission();
       $scope.showNotifyButton = false;
