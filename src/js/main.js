@@ -202,6 +202,8 @@
       if (!duration) return;
 
       _this.restartCountdown(duration, durationType);
+
+      ga('send', 'event', 'button', 'click', durationType);
     };
 
     $scope.submit = function() {
