@@ -13,9 +13,6 @@
       ga('create', 'UA-30845013-3', 'auto');
       ga('send', 'pageview');
     </script>
-
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
-    <script src="js/main.js"></script>
   </head>
   <body>
     <div class="main" ng-controller="MainCtrl">
@@ -31,18 +28,18 @@
                placeholder="What are you doing?" />
       </form>
 
-      <div class="countdown countdown__timer_{{ timerType }}">
+      <div class="countdown countdown__timer_{{ timerType }}" ng-cloak>
         <div class="countdown__time">{{ formattedTime }}</div>
       </div>
 
-      <div class="buttons">
+      <div class="buttons" ng-cloak>
         <button tabindex="0" class="button button_color_red" ng-click="start('pomodoro')">Pomodoro</button>
         <button tabindex="0" class="button button_color_orange" ng-click="start('shortBreak')">Short break</button>
         <button tabindex="0" class="button button_color_green" ng-click="start('longBreak')">Long break</button>
         <button tabindex="0" class="button button_color_green" ng-click="turnNotifications()" ng-show="showNotifyButton">Notify me</button>
       </div>
 
-      <div class="task-list" ng-hide="!tasks.length">
+      <div class="task-list" ng-cloak ng-hide="!tasks.length">
         <h2 class="task-list__head">My tasks</h2>
 
         <table class="task-list__list">
@@ -96,5 +93,7 @@
 
     </div>
 
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular.min.js"></script>
+    <script src="js/main.js"></script>
   </body>
 </html>
