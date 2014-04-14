@@ -25,14 +25,6 @@ module.exports = function(grunt) {
       }
     },
 
-    inlinecss: {
-      main: {
-        files: {
-          'out/index.html': 'src/index.html'
-        }
-      }
-    },
-
     uglify: {
       options: {
         report: 'min'
@@ -57,28 +49,29 @@ module.exports = function(grunt) {
       }
     },
 
+    inline: {
+      main: {
+        src: ['out/index.html']
+      }
+    },
+
     'gh-pages': {
       options: {
         base: 'out'
       },
       src: '**/*'
-    },
-
-    watch: {
-
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
-  grunt.loadNpmTasks('grunt-inline-css');
+  grunt.loadNpmTasks('grunt-inline');
   grunt.loadNpmTasks('grunt-csso');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-gh-pages');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
 
-  grunt.registerTask('build', ['clean', 'copy', 'csso', 'uglify', 'htmlmin']);
+  grunt.registerTask('build', ['clean', 'copy', 'csso', 'uglify', 'htmlmin', 'inline']);
   grunt.registerTask('deploy', ['build', 'gh-pages']);
   grunt.registerTask('default', ['build']);
 };
