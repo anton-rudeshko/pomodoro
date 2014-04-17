@@ -166,15 +166,16 @@ body, html {
 }
 
 .task-list__cell_type_name {
-  padding-right: 20px;
+  padding-right: 10px;
 }
 
 .task-list__cell_type_remove {
   width: 28px;
 }
 
-.task-list__today .task-list__cell {
+.task-list__separator .task-list__cell_border_top {
   padding-bottom: 10px;
+  border-top: 1px solid #ccc;
 }
 
 .task-list__remove {
@@ -189,6 +190,10 @@ body, html {
   cursor: pointer;
 }
 
+.task-list__task:hover {
+  background-color: #ffffe0;
+}
+
 .task-list__task:hover .task-list__remove {
   visibility: visible;
 }
@@ -198,17 +203,29 @@ body, html {
   color: #fff;
 }
 
-.task-list__name:hover {
+.task-list__name {
+  float: left;
+}
+
+.task-list__task .task-list__name:hover {
   color: #666;
   text-decoration: underline;
   cursor: pointer;
 }
 
+.task-list__pomodoro-count {
+  float: right;
+  margin-left: 12px;
+  color: #666;
+}
+
 .period {
   display: inline-block;
-  width: 9px;
-  height: 18px;
-  margin-right: 5px;
+  cursor: default;
+  width: 10px;
+  height: 16px;
+  margin-right: 4px;
+  float: left;
 }
 
 .period_selected {
@@ -221,8 +238,10 @@ body, html {
 
 .period_type_shortBreak {
   background-color: #ffb20f;
+  width: 4px;
 }
 
 .period_type_longBreak {
   background-color: #27c411;
+  width: 8px;
 }
