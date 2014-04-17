@@ -194,6 +194,7 @@
     /**
      * Switch currently selected task.
      * @param {Task} task
+     * @public
      */
     $scope.select = function(task) {
       $scope.currentTask = task;
@@ -201,6 +202,7 @@
 
     /**
      * @param {String} durationType
+     * @public
      */
     $scope.start = function(durationType) {
       document.activeElement.blur();
@@ -213,6 +215,9 @@
       ga('send', 'event', durationType, 'start');
     };
 
+    /**
+     * @public
+     */
     $scope.submit = function() {
       document.activeElement.blur();
 
@@ -220,7 +225,8 @@
       _this.restartCountdown(DURATIONS['pomodoro'], 'pomodoro');
     };
 
-    $scope.showNotifyButton = notifications && notifications.permission === 'default';
+    // HTML5 Notifications
+    $scope.showNotifyButton = notifications && notifications.permission !== 'granted';
     $scope.turnNotifications = function() {
       notifications.requestPermission();
       $scope.showNotifyButton = false;
