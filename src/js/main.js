@@ -108,6 +108,10 @@
     var _this = this,
       tasks = $scope.tasks = loadTasks();
 
+    window.onbeforeunload = function() {
+      if (_this.isTicking()) return "Still ticking!";
+    };
+
     $scope.timerType = 'pomodoro';
     $scope.formattedTime = dateFilter(DURATIONS.pomodoro, DATE_FORMAT);
     $scope.currentTask = new Task();
