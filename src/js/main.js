@@ -1,5 +1,6 @@
 (function(window, document) {
   var angular = window.angular,
+    ga = window.ga,
     localStorage = window.localStorage || {},
 
     app = angular.module('pomodoro', []),
@@ -172,9 +173,11 @@
         currentTask.periods.push(new Period(durationType));
         $scope.currentTask = new Task(currentTask.name);
 
+        saveTasks(tasks);
+
         notifyAll(currentTask.name);
 
-        saveTasks(tasks);
+        ga('send', 'event', durationType, 'end');
       });
     };
 
@@ -207,7 +210,7 @@
 
       _this.restartCountdown(duration, durationType);
 
-      ga('send', 'event', 'button', 'click', durationType);
+      ga('send', 'event', durationType, 'start');
     };
 
     $scope.submit = function() {
