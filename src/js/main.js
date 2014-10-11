@@ -3,9 +3,9 @@
     ga = window.ga,
     localStorage = window.localStorage || {},
 
-    pomodoroStr = 'pomodoro',
+    POMODORO_STR = 'pomodoro',
 
-    app = angular.module(pomodoroStr, []),
+    app = angular.module(POMODORO_STR, []),
     isDev = localStorage['isDev'],
 
     SECOND = 1000,
@@ -110,7 +110,7 @@
   app.filter('pomodoros', function() {
     return function(periods) {
       return periods.filter(function(period) {
-        return period.type === pomodoroStr;
+        return period.type === POMODORO_STR;
       }).length || '';
     };
   });
@@ -123,7 +123,7 @@
       if (_this.isTicking()) return "Still ticking!";
     };
 
-    $scope.timerType = pomodoroStr;
+    $scope.timerType = POMODORO_STR;
     $scope.formattedTime = dateFilter(DURATIONS.pomodoro, DATE_FORMAT);
     $scope.currentTask = new Task();
 
@@ -232,7 +232,7 @@
       document.activeElement.blur();
 
       if (_this.isTicking()) return;
-      _this.restartCountdown(DURATIONS[pomodoroStr], pomodoroStr);
+      _this.restartCountdown(DURATIONS[POMODORO_STR], POMODORO_STR);
     };
 
     // HTML5 Notifications
