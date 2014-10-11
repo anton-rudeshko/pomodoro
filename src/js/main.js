@@ -64,11 +64,11 @@
   }
 
   function notifyAll(taskName) {
-    document.title = 'Time is up!' + (taskName ? ' - ' + taskName : '') + ' - Pomodoro tracker';
+    document.title = 'Time is up!' + (taskName ? ' - ' + taskName : '') + ' - Pomodoro Tracker';
 
     soundAlert();
 
-    var notification = new Notification('Pomodoro tracker', {
+    var notification = new Notification('Pomodoro Tracker', {
       tag: 'pomodoro-tracker',
       body: (taskName ? taskName + ' - ' : '') + 'Time is up!'
     });
@@ -137,7 +137,7 @@
 
     _this.updateTimeDisplay = function(timeLeft, taskName) {
       $scope.formattedTime = dateFilter(timeLeft, DATE_FORMAT);
-      document.title = $scope.formattedTime + (taskName ? ' - ' + taskName : '') + ' - Pomodoro tracker';
+      document.title = $scope.formattedTime + (taskName ? ' - ' + taskName : '') + ' - Pomodoro Tracker';
     };
 
     /**
