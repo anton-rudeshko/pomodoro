@@ -120,7 +120,7 @@
       tasks = $scope.tasks = loadTasks();
 
     window.onbeforeunload = function() {
-      if (_this.isTicking()) return "Still ticking!";
+      if (_this.isTicking()) return 'Still ticking!';
     };
 
     $scope.timerType = POMODORO_STR;
