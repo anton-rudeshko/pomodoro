@@ -10,7 +10,7 @@
 
     SECOND = 1000,
     MINUTE = 60 * SECOND,
-    SCALE = isDev ? SECOND : MINUTE,
+    SCALE = isDev ? SECOND / 5 : MINUTE,
 
     DURATIONS = {
       pomodoro: 25 * SCALE,
@@ -22,6 +22,10 @@
     DEFAULT_TASK_NAME = 'Some task',
 
     notifications = window.Notification;
+
+  function panTime(number) {
+    return ('00' + number).slice(-2);
+  }
 
   /**
    * @param {String} [name]
@@ -95,23 +99,41 @@
     return dropTime(new Date());
   }
 
-  app.filter('todayPeriods', function() {
+  app.filter('periods', function() {
+    return function(tasks) {
+      return tasks.reduce(function(result, task) {
+        return result.concat(task.periods || []);
+      }, []);
+    };
+  });
+
+  app.filter('today', ['periodsFilter', function(periodsFilter) {
     return function(tasks) {
       var today = todayDate();
 
-      return tasks.reduce(function(result, task) {
-        return result.concat(task.periods || []);
-      }, []).filter(function(period) {
-          return today === dropTime(period.time);
-        });
+      return periodsFilter(tasks).filter(function(period) {
+        return today === dropTime(period.time);
+      });
     };
-  });
+  }]);
 
   app.filter('pomodoros', function() {
     return function(periods) {
       return periods.filter(function(period) {
         return period.type === POMODORO_STR;
       }).length || '';
+    };
+  });
+
+  app.filter('spent', function() {
+    return function(periods) {
+      var mins = periods.reduce(function(result, period) {
+        return result + DURATIONS[period.type];
+      }, 0) / SCALE;
+
+      var hours = (mins / 60) >> 0;
+      mins = mins % 60;
+      return hours + ':' + panTime(mins);
     };
   });
 

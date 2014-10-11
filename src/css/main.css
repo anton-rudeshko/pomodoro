@@ -15,7 +15,7 @@ body, html {
 }
 
 .main {
-  margin-top: 50px;
+  margin-top: 40px;
 }
 
 .main::after {
@@ -146,7 +146,7 @@ body, html {
 
 .task-list {
   margin: 0 auto;
-  width: 600px;
+  width: 700px;
 }
 
 .task-list__head {
@@ -154,9 +154,10 @@ body, html {
 }
 
 .task-list__list {
-  margin: 10px 0 10px -38px;
+  margin: 10px 0;
   padding: 0;
   border-collapse: collapse;
+  width: 100%;
 }
 
 .task-list__cell {
@@ -166,7 +167,24 @@ body, html {
 }
 
 .task-list__cell_type_name {
+  padding-right: 15px;
+  padding-left: 10px;
+  width: 150px;
+  white-space: nowrap;
+}
+
+.task-list__cell_type_pomodoros {
+  text-align: right;
   padding-right: 10px;
+  width: 20px;
+}
+
+.task-list__cell_type_spent {
+  padding-right: 10px;
+  text-align: right;
+  color: #666;
+  width: 60px;
+  white-space: nowrap;
 }
 
 .task-list__cell_type_remove {
@@ -183,7 +201,6 @@ body, html {
   visibility: hidden;
   width: 28px;
   height: 28px;
-  margin-right: 10px;
   color: #000;
   text-align: center;
   font-weight: bold;
@@ -226,10 +243,11 @@ body, html {
   height: 16px;
   margin-right: 4px;
   float: left;
+  border-radius: 3px;
 }
 
 .period_selected {
-  outline: 1px solid #333;
+  box-shadow: 0 0 0 1px #666;
 }
 
 .period_type_pomodoro {

@@ -37,7 +37,7 @@
       </div>
 
       <div class="buttons" ng-cloak>
-        <button tabindex="0" class="button button_color_red" ng-click="start('pomodoro')">Pomodoro</button>
+        <button tabindex="0" class="button button_color_red" title="Start new Pomodoro" ng-click="start('pomodoro')">Pomodoro</button>
         <button tabindex="0" class="button button_color_orange" ng-click="start('shortBreak')">Short break</button>
         <button tabindex="0" class="button button_color_green" ng-click="start('longBreak')">Long break</button>
         <button tabindex="0" class="button button_color_green" ng-click="turnNotifications()" ng-show="showNotifyButton">Notify me</button>
@@ -47,32 +47,36 @@
         <h2 class="task-list__head">My tasks</h2>
 
         <table class="task-list__list">
+          <!-- Today -->
           <tr class="task-list__today">
-            <td class="task-list__cell"></td>
             <td class="task-list__cell task-list__cell_type_name">
               <span class="task-list__name">Today</span>
-              <span class="task-list__pomodoro-count">{{ tasks | todayPeriods | pomodoros }}</span>
+            </td>
+            <td class="task-list__cell task-list__cell_type_pomodoros">
+              <span title="Pomodoros today">{{ tasks | today | pomodoros }}</span>
             </td>
             <td class="task-list__cell task-list__cell_type_periods">
-              <span ng-repeat="p in tasks | todayPeriods | orderBy:'time'"
+              <span ng-repeat="p in tasks | today | orderBy:'time'"
                     ng-mouseenter="p.$s = true"
                     ng-mouseleave="p.$s = false"
                     ng-class="{ period_selected: p.$s }"
                     class="period period_type_{{ p.type }}"></span>
             </td>
+            <td class="task-list__cell" colspan="2"></td>
           </tr>
-          <tr class="task-list__separator">
-            <td class="task-list__cell"></td>
-            <td class="task-list__cell task-list__cell_border_top" colspan="2"></td>
-          </tr>
-          <tr ng-repeat="task in tasks" class="task-list__task">
-            <td class="task-list__cell task-list__cell_type_remove">
-              <span class="task-list__remove" ng-click="removeTask(task)">&times;</span>
-            </td>
 
+          <tr class="task-list__separator">
+            <td class="task-list__cell task-list__cell_border_top" colspan="4"></td>
+          </tr>
+
+          <!-- Tasks -->
+          <tr ng-repeat="task in tasks" class="task-list__task">
             <td class="task-list__cell task-list__cell_type_name">
               <span class="task-list__name" title="Resume work on {{ task.name }}" ng-click="select(task)">{{ task.name }}</span>
-              <span class="task-list__pomodoro-count">{{ task.periods | pomodoros }}</span>
+            </td>
+
+            <td class="task-list__cell task-list__cell_type_pomodoros">
+              <span title="Pomodoros">{{ task.periods | pomodoros }}</span>
             </td>
 
             <td class="task-list__cell task-list__cell_type_periods">
@@ -82,6 +86,27 @@
                     ng-class="{ period_selected: p.$s }"
                     class="period period_type_{{ p.type }}"></span>
             </td>
+
+            <td class="task-list__cell task-list__cell_type_spent">
+              <span title="Time spent">{{ task.periods | spent }}</span>
+            </td>
+
+            <td class="task-list__cell task-list__cell_type_remove">
+              <span class="task-list__remove" title="Remove" ng-click="removeTask(task)">&times;</span>
+            </td>
+          </tr>
+
+          <!-- Total -->
+          <tr class="task-list__separator">
+            <td class="task-list__cell"></td>
+            <td class="task-list__cell task-list__cell_type_pomodoros">
+              <span title="Total pomodoros">{{ tasks | periods | pomodoros }}</span>
+            </td>
+            <td class="task-list__cell"></td>
+            <td class="task-list__cell task-list__cell_type_spent">
+              <span title="Total time tracked">{{ tasks | periods | spent }}</span>
+            </td>
+            <td class="task-list__cell"></td>
           </tr>
         </table>
       </div>
