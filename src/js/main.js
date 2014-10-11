@@ -36,6 +36,14 @@
     this.periods = [];
   }
 
+  function normalizeTaskName(task) {
+    return task.name.trim().toLowerCase();
+  }
+
+  function taskEquals(task1, task2) {
+    return normalizeTaskName(task1) === normalizeTaskName(task2);
+  }
+
   /**
    * @param {String} type
    * @constructor
@@ -181,10 +189,12 @@
 
       // Looking for task with same name
       tasks.some(function(task) {
-        if (!currentTask.name.match(new RegExp(task.name.trim(), 'gi'))) return false;
+        if (taskEquals(currentTask, task)) {
+          $scope.currentTask = currentTask = task;
+          return true;
+        }
 
-        $scope.currentTask = currentTask = task;
-        return true;
+        return false;
       });
 
       $scope.timerType = durationType;
