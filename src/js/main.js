@@ -149,6 +149,12 @@
     var _this = this,
       tasks = $scope.tasks = loadTasks();
 
+    function findMatchingTask(task) {
+      for (var i = 0, len = tasks.length; i < len; i++)
+        if (taskEquals(tasks[i], task))
+          return tasks[i];
+    }
+
     window.onbeforeunload = function() {
       if (_this.isTicking()) return 'Still ticking!';
     };
@@ -185,17 +191,7 @@
       if (!duration || !durationType || _this.isTicking()) return;
 
       var timeLeft = duration,
-        currentTask = $scope.currentTask;
-
-      // Looking for task with same name
-      tasks.some(function(task) {
-        if (taskEquals(currentTask, task)) {
-          $scope.currentTask = currentTask = task;
-          return true;
-        }
-
-        return false;
-      });
+        currentTask = $scope.currentTask = findMatchingTask($scope.currentTask) || $scope.currentTask;
 
       $scope.timerType = durationType;
 
@@ -210,7 +206,8 @@
 
         if (!currentTask.name) currentTask.name = DEFAULT_TASK_NAME;
 
-        if (!~tasks.indexOf(currentTask)) tasks.unshift(currentTask);
+        var match = findMatchingTask(currentTask);
+        match ? currentTask = match : tasks.unshift(currentTask);
 
         currentTask.periods.push(new Period(durationType));
         $scope.currentTask = new Task(currentTask.name);
