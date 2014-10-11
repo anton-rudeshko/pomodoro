@@ -216,7 +216,7 @@ body, html {
 }
 
 .task-list__remove:hover {
-  background-color: #ff9706;
+  background-color: #ffb20f;
   color: #fff;
 }
 
@@ -225,8 +225,7 @@ body, html {
 }
 
 .task-list__task .task-list__name:hover {
-  color: #666;
-  text-decoration: underline;
+  color: #ffb20f;
   cursor: pointer;
 }
 
