@@ -23,6 +23,10 @@
 
     notifications = window.Notification;
 
+  function now() {
+    return +new Date();
+  }
+
   function panTime(number) {
     return ('00' + number).slice(-2);
   }
@@ -50,7 +54,7 @@
    */
   function Period(type) {
     this.type = type;
-    this.time = new Date().getTime();
+    this.time = now();
   }
 
   /**
@@ -171,7 +175,7 @@
       saveTasks(tasks);
     };
 
-    _this.updateTimeDisplay = function(timeLeft, taskName) {
+    _this.updateCountdownDisplay = function(timeLeft, taskName) {
       $scope.formattedTime = dateFilter(timeLeft, DATE_FORMAT);
       document.title = $scope.formattedTime + (taskName ? ' - ' + taskName : '') + ' - Pomodoro Tracker';
     };
@@ -184,26 +188,35 @@
     };
 
     /**
-     * @param {Number} duration
      * @param {String} durationType
+     * @see https://docs.angularjs.org/api/ng/service/$interval
      */
-    _this.startCountdown = function(duration, durationType) {
-      if (!duration || !durationType || _this.isTicking()) return;
+    _this.startCountdown = function(durationType) {
+      var duration = DURATIONS[durationType];
+      if (!duration || _this.isTicking()) return;
 
-      var timeLeft = duration,
-        currentTask = $scope.currentTask = findMatchingTask($scope.currentTask) || $scope.currentTask;
+      var startTime = now(),
+        currentTask = $scope.currentTask = findMatchingTask($scope.currentTask) || $scope.currentTask,
+        INTERVAL = SECOND / 4;
 
       $scope.timerType = durationType;
 
-      _this.updateTimeDisplay(timeLeft, currentTask.name);
-      _this.countdownInterval = $interval(function() {
-        timeLeft -= SECOND;
-        _this.updateTimeDisplay(timeLeft, currentTask.name);
-      }, SECOND, timeLeft / SECOND);
+      _this.updateCountdownDisplay(duration, currentTask.name);
 
-      _this.countdownInterval.then(function timeIsOut() {
-        _this.countdownInterval = null;
+      _this.countdownInterval = $interval(function onTick() {
+        var elapsedTime = now() - startTime,
+          timeLeft = Math.max(duration - elapsedTime, 0);
 
+        timeLeft = Math.ceil(timeLeft / SECOND) * SECOND; // display previous second as long as possible
+        _this.updateCountdownDisplay(timeLeft, currentTask.name);
+
+        if (timeLeft > 0) return;
+
+        _this.stopCountdown();
+        onFinish();
+      }, INTERVAL);
+
+      function onFinish() {
         if (!currentTask.name) currentTask.name = DEFAULT_TASK_NAME;
 
         var match = findMatchingTask(currentTask);
@@ -217,17 +230,19 @@
         notifyAll(currentTask.name);
 
         ga('send', 'event', durationType, 'end');
-      });
+      }
+
+      ga('send', 'event', durationType, 'start');
     };
 
-    _this.cancelCountdown = function() {
+    _this.stopCountdown = function() {
       $interval.cancel(_this.countdownInterval);
       _this.countdownInterval = null;
     };
 
-    _this.restartCountdown = function(duration, durationType) {
-      _this.cancelCountdown();
-      _this.startCountdown(duration, durationType);
+    _this.restartCountdown = function(durationType) {
+      _this.stopCountdown();
+      _this.startCountdown(durationType);
     };
 
     /**
@@ -245,23 +260,15 @@
      */
     $scope.start = function(durationType) {
       document.activeElement.blur();
-
-      var duration = DURATIONS[durationType];
-      if (!duration) return;
-
-      _this.restartCountdown(duration, durationType);
-
-      ga('send', 'event', durationType, 'start');
+      _this.restartCountdown(durationType);
     };
 
     /**
+     * Submit may be used to confirm task name change, so we should not restart countdown if already ticking.
      * @public
      */
     $scope.submit = function() {
-      document.activeElement.blur();
-
-      if (_this.isTicking()) return;
-      _this.restartCountdown(DURATIONS[POMODORO_STR], POMODORO_STR);
+      if (!_this.isTicking()) $scope.start(POMODORO_STR);
     };
 
     // HTML5 Notifications
